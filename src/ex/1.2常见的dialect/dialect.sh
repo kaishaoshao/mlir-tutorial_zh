@@ -20,3 +20,12 @@ $mlir_opt  -convert-linalg-to-affine-loops \
     
 $mlir_opt -convert-linalg-to-affine-loops -affine-loop-normalize -affine-simplify-structures  \
           ./func_output3.mlir   
+
+    
+$mlir_opt   -convert-elementwise-to-linalg \
+            -func-bufferize \
+            -linalg-bufferize \ #LLVM20 废弃
+            -convert-linalg-to-affine-loops
+            ./func64.mlir   
+
+
