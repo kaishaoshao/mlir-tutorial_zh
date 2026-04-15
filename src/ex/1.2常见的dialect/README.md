@@ -52,7 +52,7 @@ Linalg 的特点：
 3. **目标代码生成**：
    - Linalg 可以生成高效的 CPU 或 GPU 代码。
 
-------
+---
 
 ### 5. **转换过程**
 
@@ -156,8 +156,6 @@ module {
 
 通过 `--convert-elementwise-to-linalg`，可以将低层次的逐元素操作提升为高层次的 Linalg 操作，从而充分利用 Linalg 的优化能力，生成高效的代码。
 
-
-
 ## -func-buffersize
 
 `-func-bufferize` 是 MLIR 中的一个 **转换 Pass**，用于将 **函数中的张量（Tensor）类型** 转换为 **缓冲区（Buffer）类型**。这个 Pass 是 MLIR 优化管道中的一部分，主要用于将高层次的张量操作转换为低层次的缓冲区操作，以便后续的代码生成和优化。
@@ -165,6 +163,7 @@ module {
 ---
 
 ### 1. **什么是张量（Tensor）和缓冲区（Buffer）？**
+
 - **张量（Tensor）**：
   - 张量是 MLIR 中的一种高层次数据类型，表示多维数组。
   - 张量操作（如逐元素加法、矩阵乘法）通常以声明式的方式表示，便于优化和分析。
@@ -175,13 +174,16 @@ module {
 ---
 
 ### 2. **`-func-bufferize` 的作用**
+
 `-func-bufferize` Pass 的作用是将函数中的张量类型转换为缓冲区类型。具体来说：
+
 - 将函数参数和返回值中的张量类型转换为缓冲区类型。
 - 将函数内部的张量操作（如 `linalg.generic`）转换为缓冲区操作（如 `memref.load` 和 `memref.store`）。
 
 ---
 
 ### 3. **转换过程**
+
 在 MLIR 中，可以通过 `mlir-opt` 工具运行 `-func-bufferize` Pass。例如：
 
 ```bash
@@ -218,6 +220,7 @@ module {
 ---
 
 ### 4. **关键变化**
+
 - **函数签名**：
   - 输入和输出张量（`tensor<4x4xf32>`）被转换为缓冲区（`memref<4x4xf32>`）。
   - 返回值被移除，改为通过输出缓冲区传递结果。
@@ -227,7 +230,9 @@ module {
 ---
 
 ### 5. **为什么需要 `-func-bufferize`？**
+
 将张量转换为缓冲区的主要目的是：
+
 1. **降低层次**：
    - 将高层次的张量操作转换为低层次的缓冲区操作，便于代码生成。
 2. **内存优化**：
@@ -238,7 +243,9 @@ module {
 ---
 
 ### 6. **优化机会**
+
 通过 `-func-bufferize`，可以进一步优化：
+
 - **内存布局**：
   优化缓冲区的内存布局，减少缓存未命中。
 - **循环融合**：
@@ -249,8 +256,6 @@ module {
 ---
 
 通过 `-func-bufferize`，可以将高层次的张量操作转换为低层次的缓冲区操作，从而更好地优化和生成目标代码。
-
-
 
 ## -convert-linalg-to-affine-loops
 
@@ -293,7 +298,7 @@ module {
 
 ### 3. 转换后的输出
 
-运行 `mlir-opt -convert-linalg-to-affine-loops func_output2.mlir` 后，输出将如下所示`func_output3.mlir`：
+运行 `mlir-opt -convert-linalg-to-affine-loops func_output2.mlir` 后，输出将如下所示 `func_output3.mlir`：
 
 ```mlir
 #map = affine_map<(d0, d1) -> (d0, d1)>
@@ -318,12 +323,7 @@ module {
 
 `-convert-linalg-to-affine-loops` 是一个非常有用的 pass，它将高级的 `linalg` 操作转换为显式的 `affine` 循环嵌套。通过结合其他优化 pass，你可以进一步优化生成的循环结构，以便更好地适应目标硬件或运行时环境。
 
-
-
-
-
 ## **参考文档**
 
 - [MLIR Linalg Dialect](https://mlir.llvm.org/docs/Dialects/Linalg/)
 - [MLIR Conversion Passes](https://mlir.llvm.org/docs/Passes/)
-
