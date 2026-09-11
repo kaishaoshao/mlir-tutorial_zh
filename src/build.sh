@@ -1,11 +1,16 @@
-cd llvm-project
-# git checkout 186a4b3b657878ae2aea23caf684b6e103901162  && git switch -c mlir # 本教程使用的版本
-# mkdir build && 
-cd build
-cmake -G Ninja ../llvm \
-  -DCMAKE_INSTALL_PREFIX=${PWD}/install \
-  -DLLVM_ENABLE_PROJECTS=mlir \
-  -DLLVM_BUILD_EXAMPLES=ON \
-  -DLLVM_TARGETS_TO_BUILD="Native;NVPTX;AMDGPU" \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DLLVM_ENABLE_ASSERTIONS=ON && ninja -j7
+#!/bin/bash
+set -e
+
+# 1. 获取 LLVM/MLIR 构建目录的绝对路径
+LLVM_BUILD_DIR="$(cd ../../llvm-project/build && pwd)"
+
+# 2. 清理旧缓存（防止缓存污染）
+rm -rf build
+
+# 3. 执行 CMake 配置（使用标准的 MLIR_DIR 和 LLVM_DIR）
+cmake -B build -G Ninja \
+  -DMLIR_DIR="${LLVM_BUILD_DIR}/lib/cmake/mlir" \
+  -DLLVM_DIR="${LLVM_BUILD_DIR}/lib/cmake/llvm"
+
+# 4. 执行构建
+cmake --build build
